@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SteeringAlign : MonoBehaviour {
+public class SteeringAlign : SteeringAbstract {
 
 	public float min_angle = 0.01f;
 	public float slow_angle = 0.1f;
@@ -42,6 +42,6 @@ public class SteeringAlign : MonoBehaviour {
 		if(diff < 0)
 			angular_acceleration = -angular_acceleration;
 
-		move.AccelerateRotation(Mathf.Clamp(angular_acceleration, -move.max_rot_acceleration, move.max_rot_acceleration));
+		move.AccelerateRotation(Mathf.Clamp(angular_acceleration, -move.max_rot_acceleration, move.max_rot_acceleration),priority);
 	}
 }

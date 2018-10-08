@@ -16,15 +16,17 @@ public class Move : MonoBehaviour {
 	public Vector3 movement = Vector3.zero;
 	public float rotation = 0.0f; // degrees
 
-	// Methods for behaviours to set / add velocities
-	public void SetMovementVelocity (Vector3 velocity) 
+    Vector3[] movement_velocity = new Vector3[5];
+    float[] rotation_velocity = new float[5];
+    // Methods for behaviours to set / add velocities
+    public void SetMovementVelocity (Vector3 velocity) 
 	{
-		movement = velocity;
+        movement = velocity;
 	}
 
-	public void AccelerateMovement (Vector3 velocity) 
+	public void AccelerateMovement (Vector3 velocity, int priority) 
 	{
-		movement += velocity;
+        movement_velocity[priority] += velocity;
 	}
 
 	public void SetRotationVelocity (float rotation_velocity) 
@@ -32,24 +34,44 @@ public class Move : MonoBehaviour {
 		rotation = rotation_velocity;
 	}
 
-	public void AccelerateRotation (float rotation_acceleration) 
+	public void AccelerateRotation (float rotation_acceleration, int priority) 
 	{
-		rotation += rotation_acceleration;
+        rotation_velocity[priority] += rotation_acceleration;
 	}
 
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		// cap velocity
-		if(movement.magnitude > max_mov_velocity)
+
+        for(int i = 0; i < movement_velocity.Length; ++i)
+        {
+            if(!Mathf.Approximately(movement_velocity[i].magnitude,0.0F))
+            {
+                movement += movement_velocity[i];
+                break;
+            }
+        }
+
+        for (int i = 0; i < rotation_velocity.Length; ++i)
+        {
+            if (!Mathf.Approximately(rotation_velocity[i], 0.0F))
+            {
+                rotation += rotation_velocity[i];
+                break;
+            }
+        }
+
+
+        // cap velocity
+        if (movement.magnitude > max_mov_velocity)
 		{
 			movement.Normalize();
 			movement *= max_mov_velocity;
 		}
 
 		// cap rotation
-		Mathf.Clamp(rotation, -max_rot_velocity, max_rot_velocity);
+		rotation = Mathf.Clamp(rotation, -max_rot_velocity, max_rot_velocity);
 
 		// rotate the arrow
 		float angle = Mathf.Atan2(movement.x, movement.z);
@@ -63,5 +85,14 @@ public class Move : MonoBehaviour {
 
 		// finally move
 		transform.position += movement * Time.deltaTime;
+
+
+      for(int i = 0; i < movement_velocity.Length; ++i)
+        {
+            movement_velocity[i] = Vector3.zero;
+        }
+
+
+
 	}
 }

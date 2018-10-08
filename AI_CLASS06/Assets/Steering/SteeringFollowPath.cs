@@ -3,7 +3,7 @@ using System.Collections;
 using BansheeGz.BGSpline.Components;
 using BansheeGz.BGSpline.Curve;
 
-public class SteeringFollowPath : MonoBehaviour {
+public class SteeringFollowPath : SteeringAbstract {
 
 	Move move;
 	SteeringSeek seek;
